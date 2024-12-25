@@ -2,12 +2,11 @@ import { FeedbackDataTable } from "./components/FeedbackDataTable";
 import { useFeedbackQuery } from "./hooks";
 
 type Props = {
-  filters?: unknown;
+  filters?: Record<string, any>;
 };
 
 export function Feedback({ filters }: Props) {
   const dataReq = useFeedbackQuery({
-    _: "Update this object to pass data to the /query endpoint.",
     filters,
   });
 
@@ -15,5 +14,13 @@ export function Feedback({ filters }: Props) {
     return <div>Loading...</div>;
   }
 
-  return <FeedbackDataTable data={dataReq.data!.data} />;
+  if (dataReq.isError) {
+    return <div>Error loading feedback data</div>;
+  }
+
+  if (!dataReq.data) {
+    return <div>No data available</div>;
+  }
+
+  return <FeedbackDataTable data={dataReq.data.data} />;
 }

@@ -2,17 +2,20 @@ import { GroupsDataTable } from "./components/GroupsDataTable";
 import { useGroupsQuery } from "./hooks";
 
 type Props = {
-  filters?: unknown;
+  filters?: Record<string, any>;
 };
 
 export function Groups({ filters }: Props) {
   const dataReq = useGroupsQuery({
-    _: "Update this object to pass data to the /groups endpoint.",
     filters,
   });
 
   if (dataReq.isLoading || !dataReq.data) {
     return <div>Loading...</div>;
+  }
+
+  if (dataReq.isError) {
+    return <div>Error loading groups data</div>;
   }
 
   return <GroupsDataTable data={dataReq.data.data} />;

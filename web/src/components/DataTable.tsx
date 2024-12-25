@@ -9,7 +9,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import cx from "classnames";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type Props<RowType> = {
   className?: string;
@@ -34,6 +34,10 @@ export function DataTable<RowType>({
 }: Props<RowType>) {
   const [rowData, _setData] = useState(() => [...data]);
   const [sorting, setSorting] = useState<SortingState>(initialSortState || []);
+
+  useEffect(() => {
+    _setData([...data]);
+  }, [data]);
 
   const columnHelper = createColumnHelper<RowType>();
 

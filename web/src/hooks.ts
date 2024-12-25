@@ -17,40 +17,40 @@ export type FeedbackGroup = {
   feedback: Feedback[];
 };
 
-export function useFeedbackQuery(query: unknown) {
+type QueryParams = {
+  filters?: Record<string, any>;
+};
+
+export function useFeedbackQuery({ filters }: QueryParams) {
   return useQuery<{ data: FeedbackData }>({
     queryFn: async () => {
       const res = await fetch("http://localhost:5001/query", {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ filters }),
         method: "POST",
       });
 
       return res.json();
     },
-    // The query key is used to cache responses and should represent
-    // the parameters of the query.
-    queryKey: ["query-data"],
+    queryKey: ["query-data", filters],
   });
 }
 
-export function useGroupsQuery(query: unknown) {
+export function useGroupsQuery({ filters }: QueryParams) {
   return useQuery<{ data: FeedbackGroup[] }>({
     queryFn: async () => {
       const res = await fetch("http://localhost:5001/groups", {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ filters }),
         method: "POST",
       });
 
       return res.json();
     },
-    // The query key is used to cache responses and should represent
-    // the parameters of the query.
-    queryKey: ["groups-data"],
+    queryKey: ["groups-data", filters],
   });
 }
