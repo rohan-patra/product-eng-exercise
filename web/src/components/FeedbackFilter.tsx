@@ -165,9 +165,9 @@ export function FilterBar({ data, onFiltersChange }: FilterBarProps) {
   const [filters, setFilters] = useState<FilterType[]>([]);
 
   const getUniqueValues = (column: string) => {
-    // if (!data) {
-    //   return DEFAULT_VALUES[column] || [];
-    // }
+    if (!data) {
+      return DEFAULT_VALUES[column] || [];
+    }
     return [...new Set(data?.map((item) => (item as any)[column]))];
   };
 
