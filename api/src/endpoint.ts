@@ -74,29 +74,40 @@ async function groupHandler(
   req: Request,
   res: Response<{ data: FeedbackGroup[] }>
 ) {
-  /**
+  /** - done
    * TODO(part-2): Implement filtering + grouping
    */
   const { filters } = req.body;
   const filteredFeedback = filterFeedback(feedback, filters || {});
 
-  const pythonRes = await fetch("http://127.0.0.1:8000/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify({ feedback: filteredFeedback }),
-  });
-
-  const pythonData = (await pythonRes.json()) as { feedback: Feedback[] };
-
-  res.status(200).json({
-    data: [
-      {
-        name: "All feedback",
-        feedback: pythonData.feedback,
+  try {
+    const pythonRes = await fetch("http://127.0.0.1:8000/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
-    ],
-  });
+      body: JSON.stringify({ feedback: filteredFeedback }),
+    });
+
+    if (!pythonRes.ok) {
+      throw new Error(`Python service returned ${pythonRes.status}`);
+    }
+
+    const pythonData = (await pythonRes.json()) as { groups: FeedbackGroup[] };
+
+    res.status(200).json({
+      data: pythonData.groups,
+    });
+  } catch (error) {
+    console.error("Error calling Python service:", error);
+    res.status(200).json({
+      data: [
+        {
+          name: "All feedback",
+          feedback: filteredFeedback,
+        },
+      ],
+    });
+  }
 }
