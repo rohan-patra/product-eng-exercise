@@ -34,6 +34,8 @@ export function useFeedbackQuery({ filters }: QueryParams) {
 
       return res.json();
     },
+    // The query key is used to cache responses and should represent
+    // the parameters of the query.
     queryKey: ["query-data", filters],
   });
 }
@@ -51,6 +53,8 @@ export function useGroupsQuery({ filters }: QueryParams) {
 
       return res.json();
     },
+    // The query key is used to cache responses and should represent
+    // the parameters of the query.
     queryKey: ["groups-data", filters],
   });
 }
